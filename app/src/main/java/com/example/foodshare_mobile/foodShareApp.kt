@@ -184,7 +184,10 @@ fun MainContent(
         Box(modifier = Modifier.padding(paddingValues)) {
             // This logic correctly decides which screen to show
             when (selectedItemIndex) {
-                0 -> HomeScreen(userName = "Toxic")
+                0 -> HomeScreen(
+                    userName = "Toxic",
+                    onSeeAllHotels = { navController.navigate("hotels_near_you") }
+                )
                 1 -> {
                     if (selectedFood == null) {
                         DiscoverScreen(onItemClick = { foodViewModel.selectFood(it) })
