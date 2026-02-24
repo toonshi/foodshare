@@ -1,5 +1,11 @@
 package com.example.foodshare_mobile
 
+// Make sure to add these imports
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.foodshare_mobile.ui.screens.AccountDetailsScreen
+import com.example.foodshare_mobile.ui.screens.ProfileScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,25 +36,43 @@ import com.example.foodshare_mobile.ui.screens.RoleSelectionScreen
 import com.example.foodshare_mobile.ui.theme.Foodshare_mobileTheme
 import com.example.foodshare_mobile.ui.viewmodels.FoodViewModel
 
-/**
- * The main entry point for the app's UI.
- */
+// This is the top-level controller, which is already correct
 @Composable
 fun FoodShareApp() {
-    var appStage by remember { mutableStateOf("onboarding") }
+    val navController = rememberNavController()
+    val foodViewModel: FoodViewModel = viewModel()
 
-    when (appStage) {
-        "onboarding" -> FoodSplashScreen(onFinished = { appStage = "role_selection" })
-        "role_selection" -> RoleSelectionScreen(onFinished = { appStage = "dashboard" })
-        "dashboard" -> MainContent()
+    NavHost(navController = navController, startDestination = "onboarding") {
+        composable("onboarding") {
+            FoodSplashScreen(onFinished = { navController.navigate("role_selection") })
+        }
+        composable("role_selection") {
+            RoleSelectionScreen(onFinished = { navController.navigate("main_app") { popUpTo("onboarding") { inclusive = true } } })
+        }
+        composable("main_app") {
+            MainContent(
+                foodViewModel = foodViewModel,
+                onNavigateToProfile = { navController.navigate("profile") }
+            )
+        }
+        composable("profile") {
+            ProfileScreen(
+                onNavigateToAccountDetails = { navController.navigate("account_details") },
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable("account_details") {
+            AccountDetailsScreen(onBack = { navController.popBackStack() })
+        }
     }
 }
 
-
-// THIS IS THE CORRECTED FUNCTION
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainContent(foodViewModel: FoodViewModel = viewModel()) {
+fun MainContent(
+    foodViewModel: FoodViewModel,
+    onNavigateToProfile: () -> Unit // New parameter to handle navigation
+) {
     // This part holds the state for which item is selected in the Discover flow
     val selectedFood by foodViewModel.selectedFood.collectAsState()
 
@@ -83,7 +107,7 @@ fun MainContent(foodViewModel: FoodViewModel = viewModel()) {
                 },
                 // The Profile icon is the navigationIcon on the left
                 navigationIcon = {
-                    IconButton(onClick = { /* TODO: Navigate to Profile Screen */ }) {
+                    IconButton(onClick = onNavigateToProfile) { // THIS IS THE CHANGE
                         Icon(
                             imageVector = Icons.Default.Person,
                             contentDescription = "Profile",
@@ -160,6 +184,6 @@ fun MainContent(foodViewModel: FoodViewModel = viewModel()) {
 @Composable
 fun MainContentPreview() {
     Foodshare_mobileTheme {
-        MainContent()
+        MainContent(onNavigateToProfile = {})
     }
 }
