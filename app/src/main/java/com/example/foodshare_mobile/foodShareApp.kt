@@ -4,6 +4,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.foodshare_mobile.ui.screens.AccountDetailsScreen
 import com.example.foodshare_mobile.ui.screens.NotificationDetailScreen
 import com.example.foodshare_mobile.ui.screens.NotificationScreen
+import com.example.foodshare_mobile.ui.screens.HotelsNearYouScreen
+import com.example.foodshare_mobile.ui.screens.HotelDetailScreen
 import com.example.foodshare_mobile.ui.screens.ProfileScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -74,6 +76,20 @@ fun FoodShareApp() {
         }
         composable("notification_detail") {
             NotificationDetailScreen(onBack = { navController.popBackStack() })
+        }
+        // Hotel Routes
+        composable("hotels_near_you") {
+            HotelsNearYouScreen(
+                onBack = { navController.popBackStack() },
+                onHotelClick = { hotelName -> navController.navigate("hotel_detail/$hotelName") }
+            )
+        }
+        composable("hotel_detail/{hotelName}") { backStackEntry ->
+            val hotelName = backStackEntry.arguments?.getString("hotelName") ?: "Hotel"
+            HotelDetailScreen(
+                hotelName = hotelName,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(userName: String) {
+fun HomeScreen(userName: String, onSeeAllHotels: () -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -56,7 +56,7 @@ fun HomeScreen(userName: String) {
 
         // Hotels Near You Section
         item {
-            SectionHeader(title = "Hotels Near You")
+            SectionHeader(title = "Hotels Near You", onSeeAllClick = onSeeAllHotels)
             Spacer(modifier = Modifier.height(8.dp))
             // Placeholder for the second list of cards
             Card(
@@ -73,13 +73,23 @@ fun HomeScreen(userName: String) {
 }
 
 @Composable
-fun SectionHeader(title: String) {
+fun SectionHeader(title: String, onSeeAllClick: (() -> Unit)? = null) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = title, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
-        Text(text = "See all", fontSize = 14.sp, color = Color.Gray, fontWeight = FontWeight.Medium)
+        if (onSeeAllClick != null) {
+            Text(
+                text = "See all",
+                fontSize = 14.sp,
+                color = Color.Gray,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.clickable { onSeeAllClick() }
+            )
+        } else {
+            Text(text = "See all", fontSize = 14.sp, color = Color.Gray, fontWeight = FontWeight.Medium)
+        }
     }
 }
