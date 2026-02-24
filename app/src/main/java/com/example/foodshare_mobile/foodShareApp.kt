@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodshare_mobile.ui.navigation.BottomNavItem
+import com.example.foodshare_mobile.ui.screens.CartScreen
 import com.example.foodshare_mobile.ui.screens.DiscoverScreen
 import com.example.foodshare_mobile.ui.screens.FoodDetailScreen
 import com.example.foodshare_mobile.ui.screens.FoodSplashScreen
@@ -58,6 +59,7 @@ fun MainContent(foodViewModel: FoodViewModel = viewModel()) {
     )
     var selectedItemIndex by remember { mutableIntStateOf(0) }
     val selectedFood by foodViewModel.selectedFood.collectAsState()
+    val cartItems by foodViewModel.cartItems.collectAsState()
 
     Scaffold(
         topBar = {
@@ -110,8 +112,8 @@ fun MainContent(foodViewModel: FoodViewModel = viewModel()) {
                 bottomNavItems.forEachIndexed { index, item ->
                     NavigationBarItem(
                         selected = selectedItemIndex == index,
-                        onClick = { 
-                            selectedItemIndex = index 
+                        onClick = {
+                            selectedItemIndex = index
                             // Optional: Clear selection when switching tabs
                             if (index != 1) foodViewModel.clearSelection()
                         },
@@ -142,11 +144,15 @@ fun MainContent(foodViewModel: FoodViewModel = viewModel()) {
                     } else {
                         FoodDetailScreen(
                             foodItem = selectedFood!!,
-                            onBack = { foodViewModel.clearSelection() }
+                            onBack = { foodViewModel.clearSelection() },
+                            onAddToCart = {
+                                foodViewModel.addToCart(it)
+                                foodViewModel.clearSelection()
+                            }
                         )
                     }
                 }
-                2 -> Text("Shop Screen", modifier = Modifier.padding(16.dp))
+                2 -> CartScreen(cartItems = cartItems)
                 3 -> Text("Profile Screen", modifier = Modifier.padding(16.dp))
             }
         }

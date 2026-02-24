@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FoodDetailScreen(foodItem: FoodItem, onBack: () -> Unit) {
+fun FoodDetailScreen(foodItem: FoodItem, onBack: () -> Unit, onAddToCart: (FoodItem) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,7 +56,7 @@ fun FoodDetailScreen(foodItem: FoodItem, onBack: () -> Unit) {
 
             // Add to Cart Button (Green)
             Button(
-                onClick = { /* Add to cart logic */ },
+                onClick = { onAddToCart(foodItem) },
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00891A))
