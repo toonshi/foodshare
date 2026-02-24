@@ -1,8 +1,7 @@
 package com.example.foodshare_mobile.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,51 +20,84 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(cartItems: List<FoodItem>) {
+    // This state tracks which tab is active
     var isPendingSelected by remember { mutableStateOf(true) }
 
     Column(
-        modifier = Modifier.fillMaxSize().background(Color(0xFFF5F5F5)),
+        modifier = Modifier
+            .fillMaxSize()
+            // Using a more accurate light grey from your screenshot
+            .background(Color(0xFFEDEDED)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // "My Cart" Header
         Text(
-            "My Cart",
-            modifier = Modifier.padding(top = 20.dp),
+            text = "My Cart",
+            modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
             fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
         )
 
-        // Toggle Buttons
+        // Toggle Buttons Row
         Row(
-            modifier = Modifier.padding(20.dp).fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+            modifier = Modifier
+                .padding(horizontal = 20.dp, vertical = 16.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Pending Orders Button
+            // Pending Orders Tab
             Button(
                 onClick = { isPendingSelected = true },
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.weight(1f).height(40.dp).padding(horizontal = 4.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(42.dp)
+                    .padding(end = 4.dp),
+                shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isPendingSelected) Color(0xFFD9D9D9) else Color.Transparent,
-                    contentColor = Color.Gray
-                )
-            ) { Text("Pending Orders", fontSize = 12.sp) }
+                    // Matches that muted grey in your screenshot
+                    containerColor = if (isPendingSelected) Color(0xFFD6D6D6) else Color.Transparent,
+                    contentColor = Color(0xFF757575)
+                ),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp) // Added to match the screenshot
+            ) {
+                Text("Pending Orders", fontSize = 13.sp, fontWeight = FontWeight.Medium)
+            }
 
-            // Complete Orders Button
-            OutlinedButton(
+            // Complete Orders Tab
+            Surface(
                 onClick = { isPendingSelected = false },
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.weight(1f).height(40.dp).padding(horizontal = 4.dp),
-                border = BorderStroke(1.dp, if (!isPendingSelected) Color(0xFF00891A) else Color.Gray),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = if (!isPendingSelected) Color.Black else Color.Gray
+                modifier = Modifier
+                    .weight(1f)
+                    .height(42.dp)
+                    .padding(start = 4.dp),
+                shape = RoundedCornerShape(8.dp),
+                color = Color.Transparent,
+                // The green border from your screenshot
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = if (!isPendingSelected) Color(0xFF00891A) else Color.Transparent
                 )
-            ) { Text("Complete Orders", fontSize = 12.sp) }
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(
+                        "Complete Orders",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = if (!isPendingSelected) Color.Black else Color(0xFF757575)
+                    )
+                }
+            }
         }
 
-        // List of Cart Items
+        // The List
         LazyColumn(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(bottom = 20.dp)
         ) {
             items(cartItems) { item ->
                 CartItemRow(item)
@@ -77,26 +109,62 @@ fun CartScreen(cartItems: List<FoodItem>) {
 @Composable
 fun CartItemRow(item: FoodItem) {
     Card(
-        modifier = Modifier.fillMaxWidth().height(80.dp),
-        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(90.dp), // Adjusted height to match screenshot proportion
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxSize().padding(8.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Image Placeholder (White Box)
-            Box(modifier = Modifier.size(60.dp).background(Color(0xFFF5F5F5), RoundedCornerShape(8.dp)))
+            // Square image placeholder
+            Box(
+                modifier = Modifier
+                    .size(65.dp)
+                    .background(Color(0xFFF9F9F9), RoundedCornerShape(8.dp))
+            )
 
-            Column(modifier = Modifier.padding(start = 12.dp).weight(1f)) {
-                Text(item.name, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                Text(item.timeLeft, fontSize = 11.sp, color = Color.Gray)
+            // Text Info
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .weight(1f)
+            ) {
+                Text(
+                    text = item.name,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = item.timeLeft,
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Track Order", fontSize = 12.sp)
-                Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+            // Track Order Action
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(end = 4.dp)
+            ) {
+                Text(
+                    text = "Track Order",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Black
+                )
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
             }
         }
     }
