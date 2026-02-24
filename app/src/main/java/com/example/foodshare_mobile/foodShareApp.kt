@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.foodshare_mobile.R
 import com.example.foodshare_mobile.ui.navigation.BottomNavItem
 import com.example.foodshare_mobile.ui.screens.CartScreen
 import com.example.foodshare_mobile.ui.screens.DiscoverScreen
@@ -55,9 +56,12 @@ fun FoodShareApp() {
             MainContent(
                 foodViewModel = foodViewModel,
                 onNavigateToProfile = { navController.navigate("profile") },
-                onNavigateToNotifications = { navController.navigate("notifications") }
+                onNavigateToNotifications = { navController.navigate("notifications") },
+                // FIX: Pass the navigation logic here!
+                onSeeAllHotels = { navController.navigate("hotels_near_you") }
             )
         }
+        // ... (keep the rest of your routes: profile, notifications, hotels, etc.)
         composable("profile") {
             ProfileScreen(
                 onNavigateToAccountDetails = { navController.navigate("account_details") },
@@ -67,7 +71,6 @@ fun FoodShareApp() {
         composable("account_details") {
             AccountDetailsScreen(onBack = { navController.popBackStack() })
         }
-        // Notification Routes
         composable("notifications") {
             NotificationScreen(
                 onBack = { navController.popBackStack() },
@@ -77,7 +80,6 @@ fun FoodShareApp() {
         composable("notification_detail") {
             NotificationDetailScreen(onBack = { navController.popBackStack() })
         }
-        // Hotel Routes
         composable("hotels_near_you") {
             HotelsNearYouScreen(
                 onBack = { navController.popBackStack() },
@@ -98,13 +100,13 @@ fun FoodShareApp() {
 @Composable
 fun MainContent(
     foodViewModel: FoodViewModel,
-    onNavigateToProfile: () -> Unit, // New parameter to handle navigation
-    onNavigateToNotifications: () -> Unit // New parameter for notifications
+    onNavigateToProfile: () -> Unit,
+    onNavigateToNotifications: () -> Unit,
+    onSeeAllHotels: () -> Unit // ADDED THIS PARAMETER
 ) {
-    // This part holds the state for which item is selected in the Discover flow
     val selectedFood by foodViewModel.selectedFood.collectAsState()
 
-    // --- CORRECTION 1: Only 3 items in the bottom nav list ---
+    // ... (Keep your bottomNavItems and selectedItemIndex logic)
     val bottomNavItems = listOf(
         BottomNavItem("Home", "home", com.example.foodshare_mobile.R.drawable.ic_home, com.example.foodshare_mobile.R.drawable.ic_home),
         BottomNavItem("Discover", "discover", com.example.foodshare_mobile.R.drawable.ic_discovery, com.example.foodshare_mobile.R.drawable.ic_discovery),
@@ -113,44 +115,28 @@ fun MainContent(
     var selectedItemIndex by remember { mutableIntStateOf(0) }
 
     Scaffold(
+        // ... (Keep your TopAppBar and NavigationBar exactly as they are)
         topBar = {
-            // --- CORRECTION 2: The TopAppBar now has the Profile Icon ---
             TopAppBar(
                 title = {
                     TextField(
-                        value = "",
-                        onValueChange = {},
-                        placeholder = { Text("Find a hotel/food") },
+                        value = "", onValueChange = {}, placeholder = { Text("Find a hotel/food") },
                         leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color(0xFFF0F0F0),
-                            unfocusedContainerColor = Color(0xFFF0F0F0),
-                            disabledContainerColor = Color(0xFFF0F0F0),
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
+                            focusedContainerColor = Color(0xFFF0F0F0), unfocusedContainerContainerColor = Color(0xFFF0F0F0),
+                            focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent
                         ),
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.height(50.dp)
+                        shape = RoundedCornerShape(8.dp), modifier = Modifier.height(50.dp)
                     )
                 },
-                // The Profile icon is the navigationIcon on the left
                 navigationIcon = {
-                    IconButton(onClick = onNavigateToProfile) { // THIS IS THE CHANGE
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Profile",
-                            modifier = Modifier.size(28.dp) // Adjusted size
-                        )
+                    IconButton(onClick = onNavigateToProfile) {
+                        Icon(Icons.Default.Person, contentDescription = "Profile", modifier = Modifier.size(28.dp))
                     }
                 },
-                // The Notification icon is an action on the right
                 actions = {
-                    IconButton(onClick = onNavigateToNotifications) { // Updated logic
-                        Icon(
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = "Notifications",
-                            modifier = Modifier.size(28.dp)
-                        )
+                    IconButton(onClick = onNavigateToNotifications) {
+                        Icon(Icons.Default.Notifications, contentDescription = "Notifications", modifier = Modifier.size(28.dp))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
@@ -158,35 +144,23 @@ fun MainContent(
         },
         bottomBar = {
             NavigationBar(containerColor = Color.White) {
-                // This loop now correctly iterates over only the 3 items
                 bottomNavItems.forEachIndexed { index, item ->
                     NavigationBarItem(
                         selected = selectedItemIndex == index,
                         onClick = { selectedItemIndex = index },
-                        label = null, // Your design doesn't show labels
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = item.selectedIcon),
-                                contentDescription = item.title,
-                                modifier = Modifier.size(26.dp)
-                            )
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.Black,
-                            unselectedIconColor = Color.Gray,
-                            indicatorColor = Color.Transparent
-                        )
+                        label = null,
+                        icon = { Icon(painter = painterResource(id = item.selectedIcon), contentDescription = item.title, modifier = Modifier.size(26.dp)) },
+                        colors = NavigationBarItemDefaults.colors(selectedIconColor = Color.Black, unselectedIconColor = Color.Gray, indicatorColor = Color.Transparent)
                     )
                 }
             }
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            // This logic correctly decides which screen to show
             when (selectedItemIndex) {
                 0 -> HomeScreen(
                     userName = "Toxic",
-                    onSeeAllHotels = { navController.navigate("hotels_near_you") }
+                    onSeeAllHotels = onSeeAllHotels // FIX: Use the parameter passed to MainContent!
                 )
                 1 -> {
                     if (selectedFood == null) {
@@ -195,10 +169,7 @@ fun MainContent(
                         FoodDetailScreen(
                             foodItem = selectedFood!!,
                             onBack = { foodViewModel.clearSelection() },
-                            onAddToCart = {
-                                foodViewModel.addToCart(it)
-                                foodViewModel.clearSelection()
-                            }
+                            onAddToCart = { foodViewModel.addToCart(it); foodViewModel.clearSelection() }
                         )
                     }
                 }
@@ -215,6 +186,6 @@ fun MainContent(
 @Composable
 fun MainContentPreview() {
     Foodshare_mobileTheme {
-        MainContent(foodViewModel = viewModel(), onNavigateToProfile = {}, onNavigateToNotifications = {})
+        MainContent(foodViewModel = viewModel(), onNavigateToProfile = {}, onNavigateToNotifications = {}, onSeeAllHotels = {})
     }
 }
