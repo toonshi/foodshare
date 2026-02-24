@@ -123,7 +123,7 @@ fun MainContent(
                         value = "", onValueChange = {}, placeholder = { Text("Find a hotel/food") },
                         leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color(0xFFF0F0F0), unfocusedContainerContainerColor = Color(0xFFF0F0F0),
+                            focusedContainerColor = Color(0xFFF0F0F0), unfocusedContainerColor = Color(0xFFF0F0F0),
                             focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent
                         ),
                         shape = RoundedCornerShape(8.dp), modifier = Modifier.height(50.dp)
