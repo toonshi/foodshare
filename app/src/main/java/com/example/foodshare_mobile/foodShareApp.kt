@@ -184,6 +184,6 @@ fun MainContent(
 @Composable
 fun MainContentPreview() {
     Foodshare_mobileTheme {
-        MainContent(onNavigateToProfile = {})
+        MainContent(foodViewModel = viewModel(), onNavigateToProfile = {})
     }
 }

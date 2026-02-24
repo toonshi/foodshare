@@ -87,7 +87,7 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfileMenuItem(
+fun ProfileMenuItem(
     title: String,
     value: String? = null,
     isUnderlined: Boolean = false,

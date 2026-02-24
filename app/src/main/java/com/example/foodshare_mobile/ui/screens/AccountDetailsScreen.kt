@@ -9,7 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.foodshare_mobile.ui.screens.DetailRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,29 +48,7 @@ fun AccountDetailsScreen(onBack: () -> Unit) {
             DetailRow(label = "ID Number", value = "07202612")
             DetailRow(label = "Phone Number", value = "+254-720261224")
             DetailRow(label = "Email", value = "toxicmlyriki @mmail.com")
-            // Assuming ProfileMenuItem is a utility composable defined elsewhere or will be defined.
-            // If it's specific to ProfileScreen, this call might be problematic.
-            // For now, I'll assume it's a general utility and let it be.
             ProfileMenuItem(title = "Advance", onClick = { /* Navigate to Advance */ })
         }
-    }
-}
-
-// Assuming DetailRow is a general utility function; if not, it should be defined here.
-// Re-using the DetailRow from FoodDetailScreen.kt
-@Composable
-fun DetailRow(label: String, value: String, isLink: Boolean = false) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(text = label, color = Color.Black, fontSize = 16.sp)
-        Text(
-            text = value,
-            color = Color.Black,
-            fontSize = 16.sp,
-            fontWeight = if (isLink) FontWeight.Bold else FontWeight.Normal,
-            textDecoration = if (isLink) TextDecoration.Underline else TextDecoration.None
-        )
     }
 }
