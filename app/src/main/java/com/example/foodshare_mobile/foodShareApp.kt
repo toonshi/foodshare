@@ -44,63 +44,61 @@ fun FoodShareApp() {
     }
 }
 
-/**
- * This is the main application screen with Scaffold, TopAppBar, and Bottom Navigation.
- */
+
+// THIS IS THE CORRECTED FUNCTION
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContent(foodViewModel: FoodViewModel = viewModel()) {
-    // List of items for the bottom navigation bar
-    val bottomNavItems = listOf(
-        BottomNavItem("Home", "home", R.drawable.ic_home, R.drawable.ic_home),
-        BottomNavItem("Discover", "discover", R.drawable.ic_discovery, R.drawable.ic_discovery),
-        BottomNavItem("Shop", "shop", R.drawable.ic_shopping_bag, R.drawable.ic_shopping_bag),
-        BottomNavItem("Profile", "profile", R.drawable.ic_profile, R.drawable.ic_profile)
-    )
-    var selectedItemIndex by remember { mutableIntStateOf(0) }
+    // This part holds the state for which item is selected in the Discover flow
     val selectedFood by foodViewModel.selectedFood.collectAsState()
     val cartItems by foodViewModel.cartItems.collectAsState()
 
+    // --- CORRECTION 1: Only 3 items in the bottom nav list ---
+    val bottomNavItems = listOf(
+        BottomNavItem("Home", "home", R.drawable.ic_home, R.drawable.ic_home),
+        BottomNavItem("Discover", "discover", R.drawable.ic_discovery, R.drawable.ic_discovery),
+        BottomNavItem("Shop", "shop", R.drawable.ic_shopping_bag, R.drawable.ic_shopping_bag)
+    )
+    var selectedItemIndex by remember { mutableIntStateOf(0) }
+
     Scaffold(
         topBar = {
+            // --- CORRECTION 2: The TopAppBar now has the Profile Icon ---
             TopAppBar(
                 title = {
-                    // Search Bar
                     TextField(
                         value = "",
                         onValueChange = {},
                         placeholder = { Text("Find a hotel/food") },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Search,
-                                contentDescription = "Search Icon"
-                            )
-                        },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.LightGray.copy(alpha = 0.4f),
-                            unfocusedContainerColor = Color.LightGray.copy(alpha = 0.4f),
-                            disabledContainerColor = Color.LightGray.copy(alpha = 0.4f),
+                            focusedContainerColor = Color(0xFFF0F0F0),
+                            unfocusedContainerColor = Color(0xFFF0F0F0),
+                            disabledContainerColor = Color(0xFFF0F0F0),
                             focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
                         ),
-                        modifier = Modifier.padding(end = 8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.height(50.dp)
                     )
                 },
+                // The Profile icon is the navigationIcon on the left
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle profile click */ }) {
+                    IconButton(onClick = { /* TODO: Navigate to Profile Screen */ }) {
                         Icon(
-                            Icons.Default.Person,
+                            imageVector = Icons.Default.Person,
                             contentDescription = "Profile",
-                            modifier = Modifier.padding(start = 8.dp)
+                            modifier = Modifier.size(28.dp) // Adjusted size
                         )
                     }
                 },
+                // The Notification icon is an action on the right
                 actions = {
-                    IconButton(onClick = { /* Handle notification click */ }) {
+                    IconButton(onClick = { /* TODO: Navigate to Notifications */ }) {
                         Icon(
-                            Icons.Default.Notifications,
+                            imageVector = Icons.Default.Notifications,
                             contentDescription = "Notifications",
-                            modifier = Modifier.padding(end = 8.dp)
+                            modifier = Modifier.size(28.dp)
                         )
                     }
                 },
@@ -109,33 +107,31 @@ fun MainContent(foodViewModel: FoodViewModel = viewModel()) {
         },
         bottomBar = {
             NavigationBar(containerColor = Color.White) {
+                // This loop now correctly iterates over only the 3 items
                 bottomNavItems.forEachIndexed { index, item ->
                     NavigationBarItem(
                         selected = selectedItemIndex == index,
-                        onClick = {
-                            selectedItemIndex = index
-                            // Optional: Clear selection when switching tabs
-                            if (index != 1) foodViewModel.clearSelection()
-                        },
-                        label = { Text(item.title) },
+                        onClick = { selectedItemIndex = index },
+                        label = null, // Your design doesn't show labels
                         icon = {
                             Icon(
-                                painter = painterResource(id = if (selectedItemIndex == index) item.selectedIcon else item.unselectedIcon),
-                                contentDescription = item.title
+                                painter = painterResource(id = item.selectedIcon),
+                                contentDescription = item.title,
+                                modifier = Modifier.size(26.dp)
                             )
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color(0xFFD50000),
+                            selectedIconColor = Color.Black,
                             unselectedIconColor = Color.Gray,
-                            indicatorColor = Color.Transparent // No background indicator
+                            indicatorColor = Color.Transparent
                         )
                     )
                 }
             }
         }
     ) { paddingValues ->
-        // The content of the currently selected screen goes here
         Box(modifier = Modifier.padding(paddingValues)) {
+            // This logic correctly decides which screen to show
             when (selectedItemIndex) {
                 0 -> HomeScreen(userName = "Toxic")
                 1 -> {
@@ -153,7 +149,6 @@ fun MainContent(foodViewModel: FoodViewModel = viewModel()) {
                     }
                 }
                 2 -> CartScreen(cartItems = cartItems)
-                3 -> Text("Profile Screen", modifier = Modifier.padding(16.dp))
             }
         }
     }
