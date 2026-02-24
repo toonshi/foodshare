@@ -51,7 +51,6 @@ fun FoodShareApp() {
 fun MainContent(foodViewModel: FoodViewModel = viewModel()) {
     // This part holds the state for which item is selected in the Discover flow
     val selectedFood by foodViewModel.selectedFood.collectAsState()
-    val cartItems by foodViewModel.cartItems.collectAsState()
 
     // --- CORRECTION 1: Only 3 items in the bottom nav list ---
     val bottomNavItems = listOf(
@@ -148,7 +147,7 @@ fun MainContent(foodViewModel: FoodViewModel = viewModel()) {
                         )
                     }
                 }
-                2 -> CartScreen(cartItems = cartItems)
+                2 -> CartScreen(viewModel = foodViewModel)
             }
         }
     }
