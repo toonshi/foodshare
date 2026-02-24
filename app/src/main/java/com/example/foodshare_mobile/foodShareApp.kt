@@ -1,10 +1,10 @@
-package com.example.foodshare_mobile
-
 // Make sure to add these imports
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.foodshare_mobile.ui.screens.AccountDetailsScreen
+import com.example.foodshare_mobile.ui.screens.NotificationDetailScreen
+import com.example.foodshare_mobile.ui.screens.NotificationScreen
 import com.example.foodshare_mobile.ui.screens.ProfileScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -52,7 +51,8 @@ fun FoodShareApp() {
         composable("main_app") {
             MainContent(
                 foodViewModel = foodViewModel,
-                onNavigateToProfile = { navController.navigate("profile") }
+                onNavigateToProfile = { navController.navigate("profile") },
+                onNavigateToNotifications = { navController.navigate("notifications") }
             )
         }
         composable("profile") {
@@ -64,6 +64,16 @@ fun FoodShareApp() {
         composable("account_details") {
             AccountDetailsScreen(onBack = { navController.popBackStack() })
         }
+        // Notification Routes
+        composable("notifications") {
+            NotificationScreen(
+                onBack = { navController.popBackStack() },
+                onNavigateToDetail = { navController.navigate("notification_detail") }
+            )
+        }
+        composable("notification_detail") {
+            NotificationDetailScreen(onBack = { navController.popBackStack() })
+        }
     }
 }
 
@@ -71,7 +81,8 @@ fun FoodShareApp() {
 @Composable
 fun MainContent(
     foodViewModel: FoodViewModel,
-    onNavigateToProfile: () -> Unit // New parameter to handle navigation
+    onNavigateToProfile: () -> Unit, // New parameter to handle navigation
+    onNavigateToNotifications: () -> Unit // New parameter for notifications
 ) {
     // This part holds the state for which item is selected in the Discover flow
     val selectedFood by foodViewModel.selectedFood.collectAsState()
@@ -117,7 +128,7 @@ fun MainContent(
                 },
                 // The Notification icon is an action on the right
                 actions = {
-                    IconButton(onClick = { /* TODO: Navigate to Notifications */ }) {
+                    IconButton(onClick = onNavigateToNotifications) { // Updated logic
                         Icon(
                             imageVector = Icons.Default.Notifications,
                             contentDescription = "Notifications",
