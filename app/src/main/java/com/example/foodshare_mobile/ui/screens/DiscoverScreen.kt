@@ -16,6 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import androidx.compose.foundation.clickable
+
 // Data model for the food items
 data class FoodItem(
     val name: String,
@@ -24,7 +26,7 @@ data class FoodItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiscoverScreen() {
+fun DiscoverScreen(onItemClick: (FoodItem) -> Unit) {
     // Sample data based on your screenshot
     val foodList = listOf(
         FoodItem("Kamande", "2 Hrs Left"),
@@ -65,7 +67,9 @@ fun DiscoverScreen() {
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             items(foodList) { item ->
-                FoodCard(item)
+                Box(modifier = Modifier.clickable { onItemClick(item) }) {
+                    FoodCard(item)
+                }
             }
         }
     }
