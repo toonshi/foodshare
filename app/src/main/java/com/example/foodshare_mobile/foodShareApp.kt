@@ -1,4 +1,5 @@
 // Make sure to add these imports
+import com.example.foodshare_mobile.R
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -195,6 +196,6 @@ fun MainContent(
 @Composable
 fun MainContentPreview() {
     Foodshare_mobileTheme {
-        MainContent(foodViewModel = viewModel(), onNavigateToProfile = {})
+        MainContent(foodViewModel = viewModel(), onNavigateToProfile = {}, onNavigateToNotifications = {})
     }
 }
