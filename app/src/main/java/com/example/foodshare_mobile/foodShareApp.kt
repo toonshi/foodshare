@@ -90,9 +90,9 @@ fun MainContent(
 
     // --- CORRECTION 1: Only 3 items in the bottom nav list ---
     val bottomNavItems = listOf(
-        BottomNavItem("Home", "home", R.drawable.ic_home, R.drawable.ic_home),
-        BottomNavItem("Discover", "discover", R.drawable.ic_discovery, R.drawable.ic_discovery),
-        BottomNavItem("Shop", "shop", R.drawable.ic_shopping_bag, R.drawable.ic_shopping_bag)
+        BottomNavItem("Home", "home", com.example.foodshare_mobile.R.drawable.ic_home, com.example.foodshare_mobile.R.drawable.ic_home),
+        BottomNavItem("Discover", "discover", com.example.foodshare_mobile.R.drawable.ic_discovery, com.example.foodshare_mobile.R.drawable.ic_discovery),
+        BottomNavItem("Shop", "shop", com.example.foodshare_mobile.R.drawable.ic_shopping_bag, com.example.foodshare_mobile.R.drawable.ic_shopping_bag)
     )
     var selectedItemIndex by remember { mutableIntStateOf(0) }
 
